@@ -35,7 +35,7 @@ class DeliveryCardTest {
         $("[role=button] .button__content").click();
         $("[data-test-id=replan-notification] .notification__content").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("У вас уже запланирована встреча на другую дату. Перепланировать?\n" +
                 "\n" +
-                "Перепланировать"));
+                "Переплан"));
         $("[data-test-id=replan-notification] .button__text").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("Перепланировать")).click();
         $("[data-test-id=success-notification] .notification__content").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("Встреча успешно запланирована на " + DataGenerator.generateDate(1)));
     }
