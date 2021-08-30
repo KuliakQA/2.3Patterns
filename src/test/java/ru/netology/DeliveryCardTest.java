@@ -1,7 +1,8 @@
 package ru.netology;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
 import ru.netology.DataGenerator;
 
@@ -9,15 +10,27 @@ import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 
 class DeliveryCardTest {
+
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
 
     @BeforeEach
     void setup() {
         open("http://localhost:9999");
     }
+
+    @AfterEach
+    void tearDownEach() {
+        closeWebDriver();
+    }
+
+    @AfterAll
+    static void tearDownAll() { SelenideLogger.removeListener("allure"); }
 
     @Test
     void replanMeetingGoodTest() {
@@ -34,8 +47,7 @@ class DeliveryCardTest {
         $("[data-test-id=date] input").setValue(DataGenerator.generateDate(1));
         $("[role=button] .button__content").click();
         $("[data-test-id=replan-notification] .notification__content").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("У вас уже запланирована встреча на другую дату. Перепланировать?\n" +
-                "\n" +
-                "Перепланировать"));
+                "\n" + "Перепланировать"));
         $("[data-test-id=replan-notification] .button__text").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("Перепланировать")).click();
         $("[data-test-id=success-notification] .notification__content").shouldBe(visible, Duration.ofSeconds(10)).shouldHave(exactText("Встреча успешно запланирована на " + DataGenerator.generateDate(1)));
     }
